@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Admin</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+</head>
+<body>
+    <h1>Tableau de Bord Admin</h1>
+
+    <h2>Gestion des Événements</h2>
+    <button id="btnAjouter">Ajouter un Événement</button>
+    <table id="tableEvenements">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Lieu</th>
+                <th>Date</th>
+                <th>Capacité</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for evenement in evenements %}
+            <tr>
+                <td>{{ evenement.titre }}</td>
+                <td>{{ evenement.lieu }}</td>
+                <td>{{ evenement.date }}</td>
+                <td>{{ evenement.capacite }}</td>
+                <td>
+                    <button class="btnModifier" data-id="{{ evenement.id }}">Modifier</button>
+                    <button class="btnSupprimer" data-id="{{ evenement.id }}">Supprimer</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Réservations</h2>
+    <table id="tableReservations">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Téléphone</th>
+                <th>Email</th>
+                <th>Événement</th>
+                <th>Mode de Paiement</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+            <tr>
+                <td>{{ reservation.nom }}</td>
+                <td>{{ reservation.telephone }}</td>
+                <td>{{ reservation.email }}</td>
+                <td>{{ reservation.evenement.titre }}</td>
+                <td>{{ reservation.mode_payment }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal Ajouter/Modifier -->
+    <div id="modalForm" style="display: none;">
+        <form id="formEvenement">
+            {% csrf_token %}
+            <input type="hidden" name="evenement_id" id="evenementId">
+            <label for="titre">Titre :</label>
+            <input type="text" name="titre" id="titre" required><br>
+            <label for="image">Image :</label>
+            <input type="file" name="image" id="image"><br>
+            <label for="description">Description :</label>
+            <textarea name="description" id="description"></textarea><br>
+            <label for="lieu">Lieu :</label>
+            <input type="text" name="lieu" id="lieu" required><br>
+            <label for="date">Date :</label>
+            <input type="datetime-local" name="date" id="date" required><br>
+            <label for="capacite">Capacité :</label>
+            <input type="number" name="capacite" id="capacite" required><br>
+            <label for="programme">Programme :</label>
+            <textarea name="programme" id="programme"></textarea><br>
+            <button type="submit">Enregistrer</button>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tableEvenements').DataTable();
+            $('#tableReservations').DataTable();
+
+            $('#btnAjouter').on('click', function () {
+                $('#modalForm').show();
+                $('#formEvenement')[0].reset();
+            });
+
+            $('.btnModifier').on('click', function () {
+                const id = $(this).data('id'); // Récupérer l'ID de l'événement
+                $.ajax({
+                    url: `/admin/modifier-evenement/${id}/`, // Endpoint pour récupérer les détails de l'événement
+                    type: 'GET', // Utilisez GET pour récupérer les données
+                    success: function (response) {
+                        // Remplir le formulaire modal avec les données reçues
+                        $('#evenementId').val(response.id);
+                        $('#titre').val(response.titre);
+                        $('#description').val(response.description);
+                        $('#lieu').val(response.lieu);
+                        $('#date').val(response.date);
+                        $('#capacite').val(response.capacite);
+                        $('#programme').val(response.programme);
+                        $('#modalForm').show(); // Afficher le formulaire modal
+                    },
+                    error: function () {
+                        alert("Une erreur s'est produite lors de la récupération des détails de l'événement.");
+                    }
+                });
+            });
+            
+
+            $('.btnSupprimer').on('click', function () {
+                const id = $(this).data('id');
+                if (confirm("Êtes-vous sûr de vouloir supprimer cet événement ?")) {
+                    $.post(`/admin/supprimer-evenement/${id}/`, {
+                        csrfmiddlewaretoken: '{{ csrf_token }}'
+                    }, function (response) {
+                        alert(response.message);
+                        location.reload();
+                    });
+                }
+            });
+
+            $('#formEvenement').on('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const url = $('#evenementId').val() ? `/admin/modifier-evenement/${$('#evenementId').val()}/` : `/admin/ajouter-evenement/`;
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function (error) {
+                        alert("Une erreur s'est produite.");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

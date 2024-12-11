@@ -81,3 +81,41 @@ from django.contrib.auth import logout
 def deconnexion(request):
     logout(request)
     return redirect('connexion')
+
+# Vérification si l'utilisateur est super-utilisateur
+def superuser_required(user):
+    return user.is_superuser
+
+@user_passes_test(superuser_required)
+def admin_dashboard(request):
+    evenements = Evenement.objects.all()
+    reservations = Reservation.objects.all()
+    return render(request, 'admin/dashboard.html', {
+        'evenements': evenements,
+        'reservations': reservations
+    })
+
+@user_passes_test(superuser_required)
+def ajouter_evenement(request):
+    if request.method == "POST":
+        form = EvenementForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"message": "Événement ajouté avec succès!"}, status=200)
+        return JsonResponse({"errors": form.errors}, status=400)
+
+@user_passes_test(superuser_required)
+def modifier_evenement(request, evenement_id):
+    evenement = get_object_or_404(Evenement, id=evenement_id)
+    if request.method == "POST":
+        form = EvenementForm(request.POST, request.FILES, instance=evenement)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({"message": "Événement modifié avec succès!"}, status=200)
+        return JsonResponse({"errors": form.errors}, status=400)
+
+@user_passes_test(superuser_required)
+def supprimer_evenement(request, evenement_id):
+    evenement = get_object_or_404(Evenement, id=evenement_id)
+    evenement.delete()
+    return JsonResponse({"message": "Événement supprimé avec succès!"}, status=200)
