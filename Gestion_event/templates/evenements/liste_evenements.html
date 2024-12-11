@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des Événements</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2f2f2f; /* Fond sombre mais doux */
+            color: #fff; /* Texte blanc pour un bon contraste */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+            margin: 0;
+            background-color: #444; /* Fond de titre sombre */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333; /* Fond sombre pour la navbar */
+            padding: 10px 20px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #555; /* Lien avec survol plus clair */
+        }
+
+        .evenements {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+
+        .evenement {
+            background-color: #444; /* Fond plus clair pour les événements */
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .evenement:hover {
+            transform: scale(1.05); /* Effet au survol */
+            background-color: #555; /* Changement de fond au survol */
+        }
+
+        .evenement h2 {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .evenement p {
+            font-size: 14px;
+            color: #ccc; /* Texte légèrement plus clair pour le contenu */
+            margin-bottom: 15px;
+        }
+
+        .evenement a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .evenement a:hover {
+            text-decoration: underline;
+        }
+
+        .navbar .connexion {
+            margin-left: auto; /* Alignement à droite */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="title">
+            <h2><a href="{% url 'liste_evenements' %}" style="color: white; text-decoration: none;">Events</a></h2>
+        </div>
+        <div class="connexion">
+            {% if user.is_authenticated %}
+                <a href="{% url 'deconnexion' %}">Déconnexion</a>
+            {% else %}
+                <a href="{% url 'connexion' %}">Connexion</a>
+            {% endif %}
+        </div>
+    </div>
+    
+
+    <h1>Événements à venir</h1>
+
+    <div class="evenements">
+        {% for evenement in evenements %}
+        <div class="evenement">
+            <h2><a href="{% url 'evenement_detail' evenement.id %}">{{ evenement.titre }}</a></h2>
+            <p>{{ evenement.lieu }} - {{ evenement.date }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

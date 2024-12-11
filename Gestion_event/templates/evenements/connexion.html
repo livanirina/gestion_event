@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #34495e;
+            padding: 30px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #ecf0f1;
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        label {
+            color: #ecf0f1;
+            font-size: 16px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 6px;
+            background-color: #5f6b75;
+            color: #ecf0f1;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            background-color: #4e5d61;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        p {
+            text-align: center;
+            font-size: 16px;
+            color: #bdc3c7;
+            margin-top: 20px;
+        }
+
+        p a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        p a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <h2><a href="{% url 'liste_evenements' %}" style="color: white; text-decoration: none;">retour</a></h2>
+        <h1>Connexion</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="text" name="username" required><br>
+
+            <label for="password">Mot de passe :</label>
+            <input type="password" name="password" required><br>
+
+            <button type="submit">Se connecter</button>
+        </form>
+        <p>Pas encore inscrit ? <a href="{% url 'inscription' %}">Inscrivez-vous ici</a></p>
+    </div>
+
+</body>
+</html>

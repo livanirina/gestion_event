@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture - {{ reservation.evenement.titre }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #ecf0f1;
+            margin-bottom: 20px;
+        }
+
+        .facture-container {
+            background-color: #34495e;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .facture-container p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .facture-container p strong {
+            font-weight: bold;
+        }
+
+        .facture-container h3 {
+            color: #3498db;
+            margin-top: 20px;
+        }
+
+        .facture-container .payment-info {
+            background-color: #7f8c8d;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .facture-container .total {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        footer {
+            color: #bdc3c7;
+            font-size: 14px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="facture-container">
+        <h1>Réservation confirmée</h1>
+
+        <p><strong>Nom :</strong> {{ reservation.nom }}</p>
+        <p><strong>Téléphone :</strong> {{ reservation.telephone }}</p>
+        <p><strong>Email :</strong> {{ reservation.email }}</p>
+        <p><strong>Événement :</strong> {{ reservation.evenement.titre }}</p>
+
+        <div class="payment-info">
+            <p><strong>Mode de paiement :</strong> {{ reservation.mode_payment }}</p>
+        </div>
+
+        <h3>Facture</h3>
+        <p><strong>Événement :</strong> {{ reservation.evenement.titre }}</p>
+        <p class="total"><strong>Montant à payer :</strong> {{ reservation.evenement.capacite }}AR</p>
+
+        <p>Merci pour votre réservation !</p>
+    </div>
+
+    <footer>
+        <p>Si vous avez des questions, veuillez nous contacter à <a href="mailto:support@evenement.com">support@evenement.com</a></p>
+    </footer>
+
+</body>
+</html>
